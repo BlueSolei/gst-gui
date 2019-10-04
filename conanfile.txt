@@ -1,0 +1,7 @@
+[requires]
+fmt/5.3.0@bincrafters/stable
+doctest/2.2.0@bincrafters/stable
+
+[generators]
+cmake
+
