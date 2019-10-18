@@ -1,7 +1,18 @@
 [requires]
 fmt/5.3.0@bincrafters/stable
+imgui/1.69@bincrafters/stable
+glfw/3.2.1@bincrafters/stable
+glew/2.1.0@bincrafters/stable
+
+[build_requires]
 doctest/2.2.0@bincrafters/stable
 
 [generators]
-cmake
+cmake_find_package_multi
+
+[imports]
+./misc/bindings, imgui_impl_glfw.cpp -> src/bindings
+./misc/bindings, imgui_impl_opengl3.cpp -> src/bindings
+./misc/bindings, imgui_impl_glfw.h -> src/bindings
+./misc/bindings, imgui_impl_opengl3.h -> src/bindings
 

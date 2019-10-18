@@ -20,13 +20,45 @@ conan_cmake_run(CONANFILE conanfile.txt
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(${CMAKE_PROJECT_NAME}
-  src/Main.cpp
-  src/gst.cpp
-  src/gst.h
-  )
+set(CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS})
+# CONFIG option is important so that CMake doesnt search for modules into the default modules directory
+find_package(imgui CONFIG)
+find_package(glfw CONFIG)
+find_package(glew CONFIG)
+
+set(GUISrc
+		src/Main.cpp
+		src/OpenGLShader.cpp
+		src/FileManager.cpp
+		src/OpenGLShader.h
+		src/FileManager.h
+		src/bindings/imgui_impl_glfw.cpp
+		src/bindings/imgui_impl_opengl3.cpp
+		src/bindings/imgui_impl_glfw.h
+		src/bindings/imgui_impl_opengl3.h
+		src/assets/simple-shader.vs
+		src/assets/simple-shader.fs
+		)
+
+set(AppSrc
+		)
+
+add_executable(gst
+			${GUISrc}
+			${AppSrc}
+		)
+
+add_custom_command(TARGET gst
+		POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/src/assets/simple-shader.vs ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+		COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_SOURCE_DIR}/src/assets/simple-shader.fs ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+		)
+
+target_compile_definitions(gst PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
+
+target_link_libraries(gst imgui::imgui glfw::glfw glew::glew)
 
 # Tests
 set(TEST_FILES
